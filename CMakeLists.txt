@@ -65,7 +65,7 @@ add_definitions(" -Wall -Wno-sign-compare -Werror -O2 ")
 #------------------------------------------------------------------------------
 # Declare where our project will be installed.
 #------------------------------------------------------------------------------
-set(CMAKE_INSTALL_PREFIX "/home/wyi/mapreduce-lite")
+set(CMAKE_INSTALL_PREFIX "/root/sig-work/mapreduce")
 
 #------------------------------------------------------------------------------
 # Ensure executables are statically linked with libraries.
@@ -125,6 +125,9 @@ include_directories(
   "${BOOST_DIR}/include"
   "${GFLAGS_DIR}/include"
   "${LIBEVENT_DIR}/include"
+  "/usr/local/include/google/protobuf"
+  "/usr/local/include/google"
+  "/usr/local/include"
   )
 
 link_directories(
@@ -137,6 +140,7 @@ link_directories(
   "${GFLAGS_DIR}/lib"
   "${GTEST_DIR}/lib"
   "${LIBEVENT_DIR}/lib"
+  "/usr/local/lib"
   )
 
 #------------------------------------------------------------------------------
