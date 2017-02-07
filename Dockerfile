@@ -24,7 +24,8 @@ RUN wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz && \
 
 RUN cmake . && make -j8 && make install
 
-WORKDIR /opt/mapreduce-lite
+WORKDIR /opt/mapreduce-lite/mrlite-demo/
 
+RUN chmod +x /opt/mapreduce-lite/mrlite-demo/wordcount_run_locally.sh
 
-CMD /etc/init.d/ssh start && cd /opt/mapreduce-lite && bash
+CMD /etc/init.d/ssh start && /opt/mapreduce-lite/mrlite-demo/wordcount_run_locally.sh && bash
