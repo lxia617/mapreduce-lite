@@ -14,6 +14,7 @@ import re
 import socket
 import sys
 import textwrap
+import getpass
 import traceback
 import getpass
 try: # for python version < 3.0
@@ -84,6 +85,10 @@ make_option("--mapreduce_tmp_dir", default='/tmp/mrlite',
 make_option("--mapreduce_buffer_size", default=1024, type="int",
             help="Maximal memory buffer size(MB) for each map worker, "
             "default(1024)"),
+
+make_option("--max_input_line_length", default=16*1024*1024, type="int",
+            help="The max line length if input is in text format, "
+            "default(16*1024*1024)"),
 
 make_option("--mapreduce_incremental_mode", action="store_true",
             default=False,

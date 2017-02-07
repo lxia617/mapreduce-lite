@@ -18,9 +18,9 @@ RUN /etc/init.d/ssh start && ssh-keyscan -H localhost >> ~/.ssh/known_hosts && s
 ADD . /root/mapreduce-lite
 
 WORKDIR /root/mapreduce-lite
-# RUN wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz && \
-# 	tar xzvf release-1.8.0.tar.gz && \
-# 	mv googletest-release-1.8.0/ src/gtest
+RUN wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz && \
+ 	tar xzvf release-1.8.0.tar.gz && \
+ 	mv googletest-release-1.8.0/ src/gtest
 
 RUN cmake . && make -j8 && make install
 

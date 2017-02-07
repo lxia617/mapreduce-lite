@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "src/mapreduce_lite/utils.h"
 #include "src/strutil/stringprintf.h"
 
-const int kDefaultMaxInputLineLength = 16 * 1024;    // 16 KB
+const int kDefaultMaxInputLineLength = 32 * 1024 * 1024;    // 32 MB
 
 DEFINE_int32(mr_max_input_line_length,
              kDefaultMaxInputLineLength,
@@ -46,14 +46,11 @@ REGISTER_READER("protofile", ProtoRecordReader);
 void Reader::Open(const std::string& source_name) {
   Close();  // Ensure to close pre-opened file.
   input_filename_ = source_name;
-  input_stream_ = OpenFileOrDie(source_name.c_str(), "r");
+  input_stream_.open(source_name.c_str());
 }
 
 void Reader::Close() {
-  if (input_stream_ != NULL) {
-    fclose(input_stream_);
-    input_stream_ = NULL;
-  }
+  input_stream_.close();
 }
 
 //-----------------------------------------------------------------------------
@@ -64,50 +61,26 @@ TextReader::TextReader()
       reading_a_long_line_(false) {
   try {
     CHECK_LT(1, FLAGS_mr_max_input_line_length);
-    line_.reset(new char[FLAGS_mr_max_input_line_length]);
   } catch(std::bad_alloc&) {
     LOG(FATAL) << "Cannot allocate line input buffer.";
+    LOG(ERROR) << "Cannot allocate line input buffer.";
   }
 }
 
 bool TextReader::Read(std::string* key, std::string* value) {
-  if (input_stream_ == NULL) {
+  if (!input_stream_.is_open()) {
     return false;
   }
 
   SStringPrintf(key, "%s-%010lld",
-                input_filename_.c_str(), ftell(input_stream_));
+                input_filename_.c_str(), input_stream_.tellg());
   value->clear();
+  getline(input_stream_, *value);
 
-  if (fgets(line_.get(), FLAGS_mr_max_input_line_length, input_stream_)
-      == NULL) {
+  if (!input_stream_.good()) {
     return false;  // Either ferror or feof. Anyway, returns false to
                    // notify the caller no further reading operations.
   }
-
-  int read_size = strlen(line_.get());
-  if (line_[read_size - 1] != '\n') {
-    LOG(ERROR) << "Encountered a too-long line (line_num = " << line_num_
-               << ").  May return one or more empty values while skipping "
-               << " this long line.";
-    reading_a_long_line_ = true;
-    return true;  // Skip the current part of a long line.
-  } else {
-    ++line_num_;
-    if (reading_a_long_line_) {
-      reading_a_long_line_ = false;
-      return true;  // Skip the last part of a long line.
-    }
-  }
-
-  if (line_[read_size - 1] == '\n') {
-    line_[read_size - 1] = '\0';
-    if (read_size > 1 && line_[read_size - 2] == '\r') {  // Handle DOS
-                                                          // text format.
-      line_[read_size - 2] = '\0';
-    }
-  }
-  value->assign(line_.get());
   return true;
 }
 
@@ -115,10 +88,11 @@ bool TextReader::Read(std::string* key, std::string* value) {
 // Implementation of ProtoRecordReader
 //-----------------------------------------------------------------------------
 bool ProtoRecordReader::Read(std::string* key, std::string* value) {
-  if (input_stream_ == NULL) {
+  if (!input_stream_.is_open()) {
     return false;
   }
-  return protofile::ReadRecord(input_stream_, key, value);
+  return true;
+  //return protofile::ReadRecord(input_stream_, key, value);
 }
 
 }  // namespace mapreduce_lite

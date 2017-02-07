@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <stdio.h>
 #include <string>
+#include <fstream>
+using namespace std;
 
 #include "src/base/class_register.h"
 #include "src/base/scoped_ptr.h"
@@ -36,7 +38,7 @@ namespace mapreduce_lite {
 //-----------------------------------------------------------------------------
 class Reader {
  public:
-  Reader() { input_stream_ = NULL; }
+  Reader() {}
   virtual ~Reader() { Close(); }
 
   virtual void Open(const std::string& source_name);
@@ -48,7 +50,7 @@ class Reader {
 
  protected:
   std::string input_filename_;
-  FILE* input_stream_;
+  fstream input_stream_;
 };
 
 
@@ -65,7 +67,6 @@ class TextReader : public Reader {
   TextReader();
   virtual bool Read(std::string* key, std::string* value);
  private:
-  scoped_array<char> line_;      // input line buffer
   int line_num_;                 // count line number
   bool reading_a_long_line_;     // is reading a lone line
 };

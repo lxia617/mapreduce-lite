@@ -19,8 +19,7 @@ m1=127.0.0.1
 
 python ../scheduler/mrlite.py   \
 --mapreduce_cmd="mrl-wordcount" \
---mapreduce_map_io="{$m1}:WordCountMapper:text:$testdata/text-00000-of-00002:/tmp/mrlite-mapper-$USER;
-                    {$m1}:WordCountMapperWithCombiner:text:$testdata/text-00001-of-00002:/tmp/mrlite-mapper-$USER;" \
+--mapreduce_map_io="{$m1}:WordCountMapperWithCombiner:text:/sogout_data/0/part-m-03970:/tmp/mrlite-mapper-$USER;" \
 --mapreduce_reduce_io="{$m1}:WordCountBatchReducer:/tmp/mrlite-reducer-$USER:text:/tmp/mrlite-$USER/output" \
 --mapreduce_tmp_dir="{$m1}/tmp/mrlite-$USER"          \
 --mapreduce_log_filebase="{$m1}/tmp/mrlite-$USER/log" \

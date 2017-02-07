@@ -167,11 +167,12 @@ using mapreduce_lite::ReduceInputIterator;
 class WordCountMapper : public Mapper {
  public:
   void Map(const std::string& key, const std::string& value) {
-    std::vector<std::string> words;
-    SplitStringUsing(value, " ", &words);
-    for (int i = 0; i < words.size(); ++i) {
-      Output(words[i], "1");
-    }
+    // std::vector<std::string> words;
+    // SplitStringUsing(value, " ", &words);
+    // for (int i = 0; i < words.size(); ++i) {
+    //   Output(words[i], "1");
+    // }
+    Output(value, "1");
   }
 };
 REGISTER_MAPPER(WordCountMapper);
@@ -180,11 +181,12 @@ REGISTER_MAPPER(WordCountMapper);
 class WordCountMapperWithCombiner : public Mapper {
  public:
   void Map(const std::string& key, const std::string& value) {
-    std::vector<std::string> words;
+/*    std::vector<std::string> words;
     SplitStringUsing(value, " ", &words);
     for (int i = 0; i < words.size(); ++i) {
       ++combined_results[words[i]];
-    }
+    }*/
+    ++combined_results[value];
   }
 
   void Flush() {
@@ -230,7 +232,7 @@ class WordCountReducer : public IncrementalReducer {
   void EndReduce(const string& key, void* partial_result) {
     int* p = static_cast<int*>(partial_result);
     ostringstream formater;
-    formater << key << " " << *p; // If output format is Text, only value will
+    formater << key << "\t" << *p; // If output format is Text, only value will
     Output(key, formater.str());  // be written.  So we write key into value.
     delete p;
   }

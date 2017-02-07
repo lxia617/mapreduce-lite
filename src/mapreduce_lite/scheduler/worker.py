@@ -99,6 +99,7 @@ class MapWorker(Worker):
         rank = self.rank
         reduce_input_buffer_size = (options.mapreduce_buffer_size /
                                     options.num_reduce_worker)
+        max_input_line_length = options.max_input_line_length
         map_worker_id = rank
         task  = options.all_tasks[rank]
         tmp_dir = task['tmp_dir']
@@ -114,6 +115,7 @@ class MapWorker(Worker):
                  task['log_filebase'],
                  options.num_map_worker,
                  reduce_input_buffer_size,
+                 max_input_line_length,
                  options.reduce_workers,
                  map_worker_id,
                  task['class'],
@@ -125,6 +127,7 @@ class MapWorker(Worker):
         --mr_log_filebase="%s"
         --mr_num_map_workers=%s
         --mr_reduce_input_buffer_size=%s
+        --mr_max_input_line_length=%s
         --mr_reduce_workers=%s
         --mr_map_worker_id=%s
         --mr_map_only=false

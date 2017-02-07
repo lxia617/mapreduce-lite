@@ -1,5 +1,17 @@
 MapReduce Lite is a C++ implementation of the MapReduce programming paradigm.
 
+### run command
+```
+sudo docker run --name mrlite --rm -P -v /data/sogout_process/extract/rest/new_extract/:/sogout_data -v /home/lixia/mapreduce_out:/tmp -v /home/lixia/mapreduce/:/opt/mapreduce-lite/mrlite-demo -it mapreduce_image bash
+```
+
+### run wordcount_run_locally.sh
+```
+chmod +x /opt/mapreduce-lite/mrlite-demo/wordcount_run_locally.sh
+cd /opt/mapreduce-lite/mrlite-demo/
+./wordcount_run_locally.sh
+```
+
 ## Pros
 
 First of all, MapReduce Lite is Lite!
